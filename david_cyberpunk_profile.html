@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>David // Personal Cyberpunk Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#080c10',
+            bgCard: '#0d1117',
+            bgElevated: '#111820',
+            neonCyan: '#00f5ff',
+            neonMagenta: '#ff00aa',
+            neonCyanDim: '#00a5ad',
+            neonMagentaDim: '#aa0077',
+            textPrimary: '#c9d1d9',
+            textSecondary: '#8b949e',
+            textMuted: '#484f58',
+            border: '#1a2233',
+          },
+          fontFamily: {
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      --cyan: #00f5ff;
+      --magenta: #ff00aa;
+      --bg: #080c10;
+      --bg-card: #0d1117;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg);
+      color: #c9d1d9;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* Scanline overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+      );
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #080c10; }
+    ::-webkit-scrollbar-thumb { background: #1a2233; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+
+    /* Glitch animation */
+    @keyframes glitch {
+      0%, 100% { text-shadow: 2px 0 var(--magenta), -2px 0 var(--cyan); transform: translate(0); }
+      10% { text-shadow: -3px -2px var(--magenta), 3px 2px var(--cyan); transform: translate(2px, -1px); }
+      20% { text-shadow: 3px 3px var(--magenta), -3px -3px var(--cyan); transform: translate(-2px, 2px); }
+      30% { text-shadow: -2px 1px var(--magenta), 2px -1px var(--cyan); transform: translate(1px, 1px); }
+      40%, 100% { text-shadow: 2px 0 var(--magenta), -2px 0 var(--cyan); transform: translate(0); }
+    }
+
+    @keyframes glitchIntense {
+      0% { clip-path: inset(40% 0 61% 0); transform: translate(-4px, 0); }
+      20% { clip-path: inset(92% 0 1% 0); transform: translate(4px, 0); }
+      40% { clip-path: inset(43% 0 1% 0); transform: translate(-2px, 0); }
+      60% { clip-path: inset(25% 0 58% 0); transform: translate(3px, 0); }
+      80% { clip-path: inset(54% 0 7% 0); transform: translate(-3px, 0); }
+      100% { clip-path: inset(58% 0 43% 0); transform: translate(2px, 0); }
+    }
+
+    .glitch-title {
+      position: relative;
+      animation: glitch 4s infinite;
+    }
+
+    .glitch-title::before,
+    .glitch-title::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch-title::before {
+      color: var(--cyan);
+      animation: glitchIntense 3s infinite linear alternate-reverse;
+      opacity: 0.6;
+    }
+
+    .glitch-title::after {
+      color: var(--magenta);
+      animation: glitchIntense 2s infinite linear alternate;
+      opacity: 0.6;
+    }
+
+    /* Blinking cursor */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .cursor-blink::after {
+      content: '█';
+      color: var(--cyan);
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+      font-weight: 300;
+    }
+
+    /* Typing animation */
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .typing-line {
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid var(--cyan);
+      animation: typewriter 2s steps(40) 1s forwards, blink 1s step-end 3s infinite;
+      width: 0;
+      display: inline-block;
+    }
+
+    /* Terminal boot lines */
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .boot-line {
+      opacity: 0;
+      animation: fadeSlideIn 0.4s ease forwards;
+    }
+
+    /* Neon card glow */
+    .neon-card {
+      border: 1px solid rgba(0, 245, 255, 0.15);
+      box-shadow: 0 0 8px rgba(0, 245, 255, 0.05), inset 0 0 8px rgba(0, 245, 255, 0.02);
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .neon-card:hover {
+      border-color: rgba(0, 245, 255, 0.4);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.15), inset 0 0 12px rgba(0, 245, 255, 0.05);
+    }
+
+    .neon-card-magenta {
+      border: 1px solid rgba(255, 0, 170, 0.15);
+      box-shadow: 0 0 8px rgba(255, 0, 170, 0.05);
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .neon-card-magenta:hover {
+      border-color: rgba(255, 0, 170, 0.4);
+      box-shadow: 0 0 20px rgba(255, 0, 170, 0.15);
+    }
+
+    /* Neon line separator */
+    .neon-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), var(--magenta), transparent);
+      box-shadow: 0 0 8px rgba(0, 245, 255, 0.3);
+    }
+
+    /* Skill bar */
+    .skill-bar-track {
+      background: #1a2233;
+      height: 14px;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta));
+      border-radius: 2px;
+      transition: box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .skill-bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 8px,
+        rgba(0, 0, 0, 0.25) 8px,
+        rgba(0, 0, 0, 0.25) 10px
+      );
+    }
+
+    .skill-row:hover .skill-bar-fill {
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.4);
+    }
+
+    /* Process indicator blink */
+    @keyframes processBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .process-active {
+      animation: processBlink 1.5s ease-in-out infinite;
+    }
+
+    /* Neon flicker for footer */
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.4; }
+    }
+
+    .neon-flicker {
+      animation: flicker 3s infinite;
+    }
+
+    /* Section headings */
+    .section-heading {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* Nav link hover */
+    .nav-link {
+      position: relative;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--cyan);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Pill badge */
+    .pill {
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      padding: 4px 12px;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .pill:hover {
+      background: rgba(0, 245, 255, 0.08);
+      border-color: rgba(0, 245, 255, 0.6);
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.15);
+    }
+  </style>
+</head>
+<body data-id="0" class="font-mono bg-bg text-textPrimary">
+  <app-icon data-id="1" hidden data-icon="terminal" data-palette="Dark"></app-icon>
+
+  <!-- NAVIGATION -->
+  <nav data-id="2" id="navbar-a9f2" class="fixed top-0 left-0 right-0 z-50 bg-bg/90 backdrop-blur-md border-b border-border">
+    <div data-id="3" class="max-w-5xl mx-auto px-4 md:px-6 h-12 flex items-center justify-between">
+      <a data-id="4" href="#hero-b3c1" class="text-neonCyan text-sm font-semibold tracking-widest">DAVID</a>
+      <div data-id="5" class="hidden md:flex items-center gap-6">
+        <a data-id="6" href="#about-d4e5" class="nav-link text-textSecondary text-xs tracking-wider hover:text-neonCyan">[about]</a>
+        <a data-id="7" href="#skills-f6g7" class="nav-link text-textSecondary text-xs tracking-wider hover:text-neonCyan">[skills]</a>
+        <a data-id="8" href="#interests-h8i9" class="nav-link text-textSecondary text-xs tracking-wider hover:text-neonCyan">[zájmy]</a>
+        <a data-id="9" href="#mission-j0k1" class="nav-link text-textSecondary text-xs tracking-wider hover:text-neonCyan">[mission]</a>
+      </div>
+      <button data-id="10" id="mobile-menu-btn-l2m3" class="md:hidden p-2 text-textSecondary hover:text-neonCyan transition-colors">
+        <i data-id="11" data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <nav data-id="12" id="mobile-menu-n4o5" class="hidden fixed inset-0 bg-bg/95 backdrop-blur-md z-50 flex flex-col items-center justify-center gap-8">
+    <button data-id="13" id="mobile-menu-close-p6q7" class="absolute top-4 right-4 p-2 text-textSecondary hover:text-neonCyan">
+      <i data-id="14" data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <a data-id="15" href="#about-d4e5" class="mobile-nav-link text-textSecondary text-lg tracking-wider hover:text-neonCyan transition-colors">// about</a>
+    <a data-id="16" href="#skills-f6g7" class="mobile-nav-link text-textSecondary text-lg tracking-wider hover:text-neonCyan transition-colors">// skills</a>
+    <a data-id="17" href="#interests-h8i9" class="mobile-nav-link text-textSecondary text-lg tracking-wider hover:text-neonCyan transition-colors">// zájmy</a>
+    <a data-id="18" href="#mission-j0k1" class="mobile-nav-link text-textSecondary text-lg tracking-wider hover:text-neonCyan transition-colors">// mission</a>
+  </nav>
+
+  <main data-id="19">
+    <!-- HERO SECTION -->
+    <section data-id="20" id="hero-b3c1" class="min-h-screen flex flex-col items-center justify-center px-4 md:px-6 relative">
+      <div data-id="21" class="text-center max-w-2xl mx-auto">
+        <h1 data-id="22" id="glitch-name-r8s9" class="glitch-title text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white tracking-wider mb-4" data-text="DAVID">DAVID</h1>
+        <p data-id="23" id="subtitle-t0u1" class="text-xs sm:text-sm text-textSecondary tracking-widest mb-10 cursor-blink" style="overflow:hidden; white-space:nowrap; border-right:2px solid var(--cyan); width:0; display:inline-block;">M365 Admin // Lextrace LLC // Praha, CZ</p>
+
+        <div data-id="24" id="boot-seq-v2w3" class="text-left mx-auto max-w-md mt-8 space-y-2 text-xs">
+          <div data-id="25" class="boot-line" style="animation-delay: 2.5s;">
+            <span data-id="26" class="text-textMuted">[SYS]</span> <span data-id="27" class="text-textSecondary">Initializing profile...</span>
+          </div>
+          <div data-id="28" class="boot-line" style="animation-delay: 3.2s;">
+            <span data-id="29" class="text-green-500">[OK]</span> <span data-id="30" class="text-textSecondary">Identity verified — Praha, CZ</span>
+          </div>
+          <div data-id="31" class="boot-line" style="animation-delay: 3.9s;">
+            <span data-id="32" class="text-green-500">[OK]</span> <span data-id="33" class="text-textSecondary">Lextrace LLC — US Entity Active</span>
+          </div>
+          <div data-id="34" class="boot-line" style="animation-delay: 4.6s;">
+            <span data-id="35" class="text-yellow-500">[WARN]</span> <span data-id="36" class="text-textSecondary">Caffeine levels: <span data-id="37" class="text-neonMagenta">critical</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div data-id="38" class="absolute bottom-8 left-0 right-0">
+        <div data-id="39" class="neon-line max-w-3xl mx-auto"></div>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div data-id="40" class="absolute bottom-14 left-1/2 -translate-x-1/2 text-textMuted animate-bounce">
+        <i data-id="41" data-lucide="chevron-down" class="w-4 h-4"></i>
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section data-id="42" id="about-d4e5" class="py-16 md:py-24 px-4 md:px-6">
+      <div data-id="43" class="max-w-3xl mx-auto">
+        <p data-id="44" class="section-heading text-neonCyan mb-2">// ABOUT</p>
+        <h2 data-id="45" id="about-heading-x4y5" class="text-xl md:text-2xl font-semibold text-white mb-8 cursor-blink">identity.txt</h2>
+
+        <div data-id="46" class="neon-card bg-bgCard rounded p-5 md:p-8 mb-8">
+          <p data-id="47" id="bio-text-z6a7" class="text-sm md:text-base text-textSecondary leading-relaxed">
+            Provozuji vlastní US LLC (<span data-id="48" class="text-neonCyan">Lextrace</span>), školím Microsoft 365, spravuji cloudové i hybridní prostředí a ve volném čase experimentuji s networking hardwarem, ESP32, mmWave radary a EEG čelenkami. Bydlím v <span data-id="49" class="text-neonMagenta">Praze</span> a mám psa <span data-id="50" class="text-neonCyan">Arga</span>.
+          </p>
+        </div>
+
+        <div data-id="51" id="pills-b8c9" class="flex flex-wrap gap-2 md:gap-3">
+          <span data-id="52" class="pill text-neonCyan">Praha</span>
+          <span data-id="53" class="pill text-neonMagenta">Wyoming LLC</span>
+          <span data-id="54" class="pill text-neonCyan">Microsoft Partner (goal)</span>
+          <span data-id="55" class="pill text-neonMagenta">Windows Insider</span>
+          <span data-id="56" class="pill text-neonCyan">YubiKey User</span>
+        </div>
+      </div>
+    </section>
+
+    <div data-id="57" class="neon-line max-w-3xl mx-auto"></div>
+
+    <!-- SKILLS SECTION -->
+    <section data-id="58" id="skills-f6g7" class="py-16 md:py-24 px-4 md:px-6">
+      <div data-id="59" class="max-w-3xl mx-auto">
+        <p data-id="60" class="section-heading text-neonMagenta mb-2">// SKILLS</p>
+        <h2 data-id="61" id="skills-heading-d0e1" class="text-xl md:text-2xl font-semibold text-white mb-8 cursor-blink">sys.capabilities[]</h2>
+
+        <div data-id="62" class="neon-card bg-bgCard rounded p-5 md:p-8">
+          <div data-id="63" class="space-y-5">
+            <!-- Skill rows -->
+            <div data-id="64" class="skill-row">
+              <div data-id="65" class="flex justify-between items-center mb-1.5">
+                <span data-id="66" class="text-xs text-textSecondary tracking-wide">Microsoft 365 Admin</span>
+                <span data-id="67" class="text-xs text-textMuted">████████░░</span>
+              </div>
+              <div data-id="68" class="skill-bar-track">
+                <div data-id="69" class="skill-bar-fill" style="width: 80%;"></div>
+              </div>
+            </div>
+
+            <div data-id="70" class="skill-row">
+              <div data-id="71" class="flex justify-between items-center mb-1.5">
+                <span data-id="72" class="text-xs text-textSecondary tracking-wide">Power Automate</span>
+                <span data-id="73" class="text-xs text-textMuted">███████░░░</span>
+              </div>
+              <div data-id="74" class="skill-bar-track">
+                <div data-id="75" class="skill-bar-fill" style="width: 70%;"></div>
+              </div>
+            </div>
+
+            <div data-id="76" class="skill-row">
+              <div data-id="77" class="flex justify-between items-center mb-1.5">
+                <span data-id="78" class="text-xs text-textSecondary tracking-wide">Networking (Ubiquiti/MikroTik)</span>
+                <span data-id="79" class="text-xs text-textMuted">███████░░░</span>
+              </div>
+              <div data-id="80" class="skill-bar-track">
+                <div data-id="81" class="skill-bar-fill" style="width: 70%;"></div>
+              </div>
+            </div>
+
+            <div data-id="82" class="skill-row">
+              <div data-id="83" class="flex justify-between items-center mb-1.5">
+                <span data-id="84" class="text-xs text-textSecondary tracking-wide">Excel & Data</span>
+                <span data-id="85" class="text-xs text-textMuted">██████░░░░</span>
+              </div>
+              <div data-id="86" class="skill-bar-track">
+                <div data-id="87" class="skill-bar-fill" style="width: 60%;"></div>
+              </div>
+            </div>
+
+            <div data-id="88" class="skill-row">
+              <div data-id="89" class="flex justify-between items-center mb-1.5">
+                <span data-id="90" class="text-xs text-textSecondary tracking-wide">Exchange Online / PowerShell</span>
+                <span data-id="91" class="text-xs text-textMuted">█████░░░░░</span>
+              </div>
+              <div data-id="92" class="skill-bar-track">
+                <div data-id="93" class="skill-bar-fill" style="width: 50%;"></div>
+              </div>
+            </div>
+
+            <div data-id="94" class="skill-row">
+              <div data-id="95" class="flex justify-between items-center mb-1.5">
+                <span data-id="96" class="text-xs text-textSecondary tracking-wide">Azure AD / Hybrid Identity</span>
+                <span data-id="97" class="text-xs text-textMuted">█████░░░░░</span>
+              </div>
+              <div data-id="98" class="skill-bar-track">
+                <div data-id="99" class="skill-bar-fill" style="width: 50%;"></div>
+              </div>
+            </div>
+
+            <div data-id="100" class="skill-row">
+              <div data-id="101" class="flex justify-between items-center mb-1.5">
+                <span data-id="102" class="text-xs text-textSecondary tracking-wide">ESP32 / Sensor Hacking</span>
+                <span data-id="103" class="text-xs text-textMuted">████░░░░░░</span>
+              </div>
+              <div data-id="104" class="skill-bar-track">
+                <div data-id="105" class="skill-bar-fill" style="width: 40%;"></div>
+              </div>
+            </div>
+
+            <div data-id="106" class="skill-row">
+              <div data-id="107" class="flex justify-between items-center mb-1.5">
+                <span data-id="108" class="text-xs text-textSecondary tracking-wide">HTML/CSS</span>
+                <span data-id="109" class="text-xs text-textMuted">███░░░░░░░</span>
+              </div>
+              <div data-id="110" class="skill-bar-track">
+                <div data-id="111" class="skill-bar-fill" style="width: 30%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div data-id="112" class="neon-line max-w-3xl mx-auto"></div>
+
+    <!-- INTERESTS SECTION -->
+    <section data-id="113" id="interests-h8i9" class="py-16 md:py-24 px-4 md:px-6">
+      <div data-id="114" class="max-w-3xl mx-auto">
+        <p data-id="115" class="section-heading text-neonCyan mb-2">// ZÁJMY</p>
+        <h2 data-id="116" id="interests-heading-f2g3" class="text-xl md:text-2xl font-semibold text-white mb-8 cursor-blink">interests.log</h2>
+
+        <div data-id="117" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div data-id="118" class="neon-card bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="119" class="text-neonCyan text-lg flex-shrink-0"><i data-id="120" data-lucide="wifi" class="w-4 h-4"></i></span>
+            <span data-id="121" class="text-xs text-textSecondary">Ubiquiti & MikroTik sítě</span>
+          </div>
+          <div data-id="122" class="neon-card-magenta bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="123" class="text-neonMagenta text-lg flex-shrink-0"><i data-id="124" data-lucide="workflow" class="w-4 h-4"></i></span>
+            <span data-id="125" class="text-xs text-textSecondary">Power Automate flows</span>
+          </div>
+          <div data-id="126" class="neon-card bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="127" class="text-neonCyan text-lg flex-shrink-0"><i data-id="128" data-lucide="monitor" class="w-4 h-4"></i></span>
+            <span data-id="129" class="text-xs text-textSecondary">Windows Insider builds</span>
+          </div>
+          <div data-id="130" class="neon-card-magenta bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="131" class="text-neonMagenta text-lg flex-shrink-0"><i data-id="132" data-lucide="radar" class="w-4 h-4"></i></span>
+            <span data-id="133" class="text-xs text-textSecondary">mmWave radary & gesture sensing</span>
+          </div>
+          <div data-id="134" class="neon-card bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="135" class="text-neonCyan text-lg flex-shrink-0"><i data-id="136" data-lucide="book-open" class="w-4 h-4"></i></span>
+            <span data-id="137" class="text-xs text-textSecondary">Obsidian & osobní KB</span>
+          </div>
+          <div data-id="138" class="neon-card-magenta bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="139" class="text-neonMagenta text-lg flex-shrink-0"><i data-id="140" data-lucide="globe" class="w-4 h-4"></i></span>
+            <span data-id="141" class="text-xs text-textSecondary">DNS, subdomény & webhosting</span>
+          </div>
+          <div data-id="142" class="neon-card bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="143" class="text-neonCyan text-lg flex-shrink-0"><i data-id="144" data-lucide="brain" class="w-4 h-4"></i></span>
+            <span data-id="145" class="text-xs text-textSecondary">EEG čelenky & mozková aktivita</span>
+          </div>
+          <div data-id="146" class="neon-card-magenta bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="147" class="text-neonMagenta text-lg flex-shrink-0"><i data-id="148" data-lucide="coins" class="w-4 h-4"></i></span>
+            <span data-id="149" class="text-xs text-textSecondary">Fintech & tokenizace aktiv</span>
+          </div>
+          <div data-id="150" class="neon-card bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="151" class="text-neonCyan text-lg flex-shrink-0"><i data-id="152" data-lucide="sparkles" class="w-4 h-4"></i></span>
+            <span data-id="153" class="text-xs text-textSecondary">Microsoft Copilot & AI agenti</span>
+          </div>
+          <div data-id="154" class="neon-card-magenta bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="155" class="text-neonMagenta text-lg flex-shrink-0"><i data-id="156" data-lucide="signal" class="w-4 h-4"></i></span>
+            <span data-id="157" class="text-xs text-textSecondary">Mobilní sítě (QAM, OFDM, VoLTE)</span>
+          </div>
+          <div data-id="158" class="neon-card bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="159" class="text-neonCyan text-lg flex-shrink-0"><i data-id="160" data-lucide="shield" class="w-4 h-4"></i></span>
+            <span data-id="161" class="text-xs text-textSecondary">Azure AD B2C & identity systémy</span>
+          </div>
+          <div data-id="162" class="neon-card-magenta bg-bgCard rounded p-4 flex items-center gap-3">
+            <span data-id="163" class="text-neonMagenta text-lg flex-shrink-0"><i data-id="164" data-lucide="code" class="w-4 h-4"></i></span>
+            <span data-id="165" class="text-xs text-textSecondary">GitHub Pages & jednoduché weby</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div data-id="166" class="neon-line max-w-3xl mx-auto"></div>
+
+    <!-- MISSION SECTION -->
+    <section data-id="167" id="mission-j0k1" class="py-16 md:py-24 px-4 md:px-6">
+      <div data-id="168" class="max-w-3xl mx-auto">
+        <p data-id="169" class="section-heading text-neonMagenta mb-2">// CURRENT MISSION</p>
+        <h2 data-id="170" id="mission-heading-h4i5" class="text-xl md:text-2xl font-semibold text-white mb-8 cursor-blink">active_processes[]</h2>
+
+        <div data-id="171" class="neon-card bg-bgCard rounded p-5 md:p-8 space-y-4">
+          <div data-id="172" class="flex items-start gap-3">
+            <span data-id="173" class="text-green-400 process-active text-sm mt-0.5">●</span>
+            <div data-id="174">
+              <span data-id="175" class="text-xs text-textMuted">PID 001 //</span>
+              <p data-id="176" class="text-sm text-textSecondary mt-1">Cíl: Stát se <span data-id="177" class="text-neonCyan">Microsoft Partnerem</span></p>
+            </div>
+          </div>
+
+          <div data-id="178" class="w-full h-px bg-border"></div>
+
+          <div data-id="179" class="flex items-start gap-3">
+            <span data-id="180" class="text-green-400 process-active text-sm mt-0.5" style="animation-delay: 0.5s;">●</span>
+            <div data-id="181">
+              <span data-id="182" class="text-xs text-textMuted">PID 002 //</span>
+              <p data-id="183" class="text-sm text-textSecondary mt-1">Projekt: Power Automate flow pro <span data-id="184" class="text-neonMagenta">e-mailové přílohy → OneDrive</span></p>
+            </div>
+          </div>
+
+          <div data-id="185" class="w-full h-px bg-border"></div>
+
+          <div data-id="186" class="flex items-start gap-3">
+            <span data-id="187" class="text-green-400 process-active text-sm mt-0.5" style="animation-delay: 1s;">●</span>
+            <div data-id="188">
+              <span data-id="189" class="text-xs text-textMuted">PID 003 //</span>
+              <p data-id="190" class="text-sm text-textSecondary mt-1">HW: <span data-id="191" class="text-neonCyan">Ubiquiti UniFi U6+</span> setup</p>
+            </div>
+          </div>
+
+          <div data-id="192" class="w-full h-px bg-border"></div>
+
+          <div data-id="193" class="flex items-start gap-3">
+            <span data-id="194" class="text-green-400 process-active text-sm mt-0.5" style="animation-delay: 1.5s;">●</span>
+            <div data-id="195">
+              <span data-id="196" class="text-xs text-textMuted">PID 004 //</span>
+              <p data-id="197" class="text-sm text-textSecondary mt-1">Pořízeno: <span data-id="198" class="text-neonMagenta">12U RACK cabinet</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal timestamp -->
+        <div data-id="199" class="mt-6 text-xs text-textMuted text-right">
+          <span data-id="200" id="timestamp-j6k7">last sync: 2026-10-03T11:17:00+02:00</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer data-id="201" id="footer-l8m9" class="pb-8 pt-4 px-4 md:px-6">
+    <div data-id="202" class="max-w-3xl mx-auto">
+      <div data-id="203" class="neon-line neon-flicker mb-6"></div>
+      <div data-id="204" class="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p data-id="205" class="text-xs text-textMuted tracking-wide">© 2026 <span data-id="206" class="text-textSecondary">DAVID</span> // Lextrace LLC // Praha, CZ</p>
+        <p data-id="207" class="text-xs text-textMuted">Built with caffeine and too many browser tabs.</p>
+      </div>
+      <p data-id="208" class="text-center text-xs text-textMuted mt-4 opacity-50">Made by Copilot</p>
+    </div>
+  </footer>
+
+  <script>
+    // Guard Lucide icons
+    if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+      lucide.createIcons();
+    }
+
+    // ——— Mobile Menu ———
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn-l2m3');
+    const mobileMenu = document.getElementById('mobile-menu-n4o5');
+    const mobileMenuClose = document.getElementById('mobile-menu-close-p6q7');
+
+    if (mobileMenuBtn && mobileMenu && mobileMenuClose) {
+      mobileMenuBtn.addEventListener('click', function () {
+        mobileMenu.classList.remove('hidden');
+      });
+
+      mobileMenuClose.addEventListener('click', function () {
+        mobileMenu.classList.add('hidden');
+      });
+
+      // Close mobile menu on nav link click
+      document.querySelectorAll('.mobile-nav-link').forEach(function (link) {
+        link.addEventListener('click', function () {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
+
+    // ——— Subtitle typing animation ———
+    const subtitle = document.getElementById('subtitle-t0u1');
+    if (subtitle) {
+      const fullText = subtitle.textContent;
+      subtitle.textContent = '';
+      subtitle.style.width = 'auto';
+      subtitle.style.maxWidth = '0';
+      subtitle.style.borderRight = '2px solid var(--cyan)';
+      subtitle.style.display = 'inline-block';
+      subtitle.style.overflow = 'hidden';
+      subtitle.style.whiteSpace = 'nowrap';
+
+      let charIndex = 0;
+      function typeChar() {
+        if (charIndex < fullText.length) {
+          subtitle.textContent += fullText[charIndex];
+          charIndex++;
+          setTimeout(typeChar, 45 + Math.random() * 35);
+        } else {
+          // Keep blinking cursor after typing finishes
+          setInterval(function () {
+            subtitle.style.borderRightColor =
+              subtitle.style.borderRightColor === 'transparent' ? 'var(--cyan)' : 'transparent';
+          }, 530);
+        }
+      }
+
+      // Start typing after a delay
+      setTimeout(function () {
+        subtitle.style.maxWidth = '100%';
+        typeChar();
+      }, 800);
+    }
+
+    // ——— Boot sequence line-by-line reveal ———
+    const bootLines = document.querySelectorAll('.boot-line');
+    bootLines.forEach(function (line, index) {
+      const delay = 2500 + index * 700;
+      setTimeout(function () {
+        line.style.opacity = '1';
+      }, delay);
+    });
+
+    // ——— Navbar background on scroll ———
+    const navbar = document.getElementById('navbar-a9f2');
+    if (navbar) {
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 50) {
+          navbar.style.borderBottomColor = 'rgba(0, 245, 255, 0.15)';
+        } else {
+          navbar.style.borderBottomColor = '';
+        }
+      });
+    }
+
+    // ——— Active section highlighting in nav ———
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    function updateActiveNav() {
+      let current = '';
+      sections.forEach(function (section) {
+        const sectionTop = section.offsetTop - 100;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(function (link) {
+        link.classList.remove('text-neonCyan');
+        link.classList.add('text-textSecondary');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('text-neonCyan');
+          link.classList.remove('text-textSecondary');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveNav);
+
+    // ——— Intersection Observer for fade-in sections ———
+    const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -50px 0px' };
+    const fadeObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('section').forEach(function (section) {
+      if (section.id !== 'hero-b3c1') {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        fadeObserver.observe(section);
+      }
+    });
+
+    // ——— Glitch intensity burst every few seconds ———
+    const glitchTitle = document.getElementById('glitch-name-r8s9');
+    if (glitchTitle) {
+      setInterval(function () {
+        glitchTitle.style.animationDuration = '0.3s';
+        setTimeout(function () {
+          glitchTitle.style.animationDuration = '4s';
+        }, 600);
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
